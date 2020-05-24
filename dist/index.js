@@ -3516,7 +3516,7 @@ function run() {
         try {
             const token = core.getInput('repo-token', { required: true });
             const context = github.context;
-            core.debug(`Context: ${context}`);
+            core.debug(`Context: ${JSON.stringify(context)}`);
             const client = new github.GitHub(token);
             const repository = yield client.graphql(`
        query issue($owner: String!, $name: String!, $issue: Int!) {
@@ -3542,7 +3542,7 @@ function run() {
                 repo: context.repo.repo,
                 issue: context.issue.number
             });
-            core.debug(`Response: ${repository}`);
+            core.debug(`Response: ${JSON.stringify(repository)}`);
             yield client.issues.addLabels({
                 issue_number: context.issue.number,
                 labels: ['good first issue'],

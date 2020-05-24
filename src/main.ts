@@ -49,11 +49,19 @@ interface Issue {
 }
 
 interface IssueResponse {
-  issue: Issue
+  repository: {
+    issue: Issue
+  }
 }
 
 const getIssue = async (client: github.GitHub): Promise<Issue> => {
-  const {issue} = await client.graphql<IssueResponse>(
+  const params = {
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issueNumber: github.context.issue.number
+  }
+  core.debug(`Issue request params: ${JSON.stringify(params)}`)
+  const response = await client.graphql<IssueResponse>(
     `
        query issue($owner: String!, $repo: String!, $issueNumber: Int!) {
           repository(owner: $owner, name: $repo) {
@@ -74,13 +82,9 @@ const getIssue = async (client: github.GitHub): Promise<Issue> => {
           }
         }
       `,
-    {
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issueNumber: github.context.issue.number
-    }
+    params
   )
-  return issue
+  return response.repository.issue
 }
 
 run()

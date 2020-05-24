@@ -3547,7 +3547,13 @@ function run() {
     });
 }
 const getIssue = (client) => __awaiter(void 0, void 0, void 0, function* () {
-    const { issue } = yield client.graphql(`
+    const params = {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issueNumber: github.context.issue.number
+    };
+    core.debug(`Issue request params: ${JSON.stringify(params)}`);
+    const response = yield client.graphql(`
        query issue($owner: String!, $repo: String!, $issueNumber: Int!) {
           repository(owner: $owner, name: $repo) {
             issue(number: $issueNumber) {
@@ -3566,12 +3572,8 @@ const getIssue = (client) => __awaiter(void 0, void 0, void 0, function* () {
             }
           }
         }
-      `, {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        issueNumber: github.context.issue.number
-    });
-    return issue;
+      `, params);
+    return response.repository.issue;
 });
 run();
 

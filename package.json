@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "project-labeler",
+  "version": "0.0.1",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Github Action for adding labels to issues based on project",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,17 +15,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/d-i-bondarenko/project-labeler.git"
   },
   "keywords": [
+    "github",
     "actions",
-    "node",
-    "setup"
+    "project",
+    "issues",
+    "labels"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Dmitry Bondarenko",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/github": "^2.2.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",

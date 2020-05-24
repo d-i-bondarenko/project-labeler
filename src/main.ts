@@ -13,7 +13,7 @@ async function run(): Promise<void> {
       core.info('There is no projects for issue')
       return Promise.resolve()
     }
-    const {nodes: currentLabels} = issue.labels
+    const currentLabels = issue.labels.nodes.map(node => node.name)
     core.info(`Current labels: ${currentLabels}`)
     const requiredlabels = ['good first issue']
     core.info(`Required labels: ${requiredlabels}`)
@@ -44,7 +44,7 @@ interface Issue {
     nodes: {project: Project}[]
   }
   labels: {
-    nodes: string[]
+    nodes: {name: string}[]
   }
 }
 

@@ -3516,12 +3516,41 @@ function run() {
         try {
             const token = core.getInput('repo-token', { required: true });
             const context = github.context;
-            core.debug(`Context: ${JSON.stringify(context)}`);
             const client = new github.GitHub(token);
-            const repository = yield client.graphql(`
-       query issue($owner: String!, $repo: String!, $issue: Int!) {
+            const issue = yield getIssue(client);
+            core.debug(`Issue: ${JSON.stringify(issue)}`);
+            const projects = issue.projectCards.nodes.map(node => node.project.name);
+            if (projects.length === 0) {
+                core.info('There is no projects for issue');
+                return Promise.resolve();
+            }
+            const { nodes: currentLabels } = issue.labels;
+            core.info(`Current labels: ${currentLabels}`);
+            const requiredlabels = ['good first issue'];
+            core.info(`Required labels: ${requiredlabels}`);
+            const labels = requiredlabels.filter(label => !currentLabels.includes(label));
+            core.info(`Adding labels: ${labels}`);
+            if (labels.length === 0) {
+                core.info('There is no labels to add');
+                return Promise.resolve();
+            }
+            yield client.issues.addLabels({
+                issue_number: context.issue.number,
+                labels,
+                owner: context.repo.owner,
+                repo: context.repo.repo
+            });
+        }
+        catch (error) {
+            core.setFailed(error.message);
+        }
+    });
+}
+const getIssue = (client) => __awaiter(void 0, void 0, void 0, function* () {
+    const { issue } = yield client.graphql(`
+       query issue($owner: String!, $repo: String!, $issueNumber: Int!) {
           repository(owner: $owner, name: $repo) {
-            issue(number: $issue) {
+            issue(number: $issueNumber) {
               projectCards {
                 nodes {
                   project {
@@ -3538,23 +3567,12 @@ function run() {
           }
         }
       `, {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue: context.issue.number
-            });
-            core.debug(`Response: ${JSON.stringify(repository)}`);
-            yield client.issues.addLabels({
-                issue_number: context.issue.number,
-                labels: ['good first issue'],
-                owner: context.repo.owner,
-                repo: context.repo.repo
-            });
-        }
-        catch (error) {
-            core.setFailed(error.message);
-        }
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issueNumber: github.context.issue.number
     });
-}
+    return issue;
+});
 run();
 
 

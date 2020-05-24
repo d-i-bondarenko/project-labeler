@@ -1,4 +1,4 @@
-name: "build-test"
+name: "test"
 on: # rebuild any PRs and main branch changes
   issues:
     types:

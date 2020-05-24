@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 
 async function run(): Promise<void> {
   try {
-    const token = core.getInput('repo-token', { required: true })
+    const token = core.getInput('repo-token', {required: true})
     const context = github.context
     core.debug(`Context: ${JSON.stringify(context)}`)
     const client = new github.GitHub(token)

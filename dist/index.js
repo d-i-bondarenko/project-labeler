@@ -3519,7 +3519,7 @@ function run() {
             core.debug(`Context: ${JSON.stringify(context)}`);
             const client = new github.GitHub(token);
             const repository = yield client.graphql(`
-       query issue($owner: String!, $name: String!, $issue: Int!) {
+       query issue($owner: String!, $repo: String!, $issue: Int!) {
           repository(owner: $owner, name: $repo) {
             issue(number: $issue) {
               projectCards {

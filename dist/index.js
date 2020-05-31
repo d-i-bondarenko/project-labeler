@@ -4147,6 +4147,10 @@ function run() {
                 if (!issueProjects.some(issueProject => issueProject.match(project.match)))
                     continue;
                 core.info(`Matches project pattern: ${project.match}`);
+                if (currentLabels.some(label => { var _a; return (_a = project.labels.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
+                    core.info(`Issue has one o blacklist labels: ${project.labels.blacklist}`);
+                    continue;
+                }
                 requiredLabels = [...requiredLabels, ...project.labels.required];
             }
             core.info(`Required labels: ${requiredLabels}`);

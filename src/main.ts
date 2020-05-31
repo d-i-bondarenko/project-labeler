@@ -30,6 +30,14 @@ async function run(): Promise<void> {
       )
         continue
       core.info(`Matches project pattern: ${project.match}`)
+      if (
+        currentLabels.some(label => project.labels.blacklist?.includes(label))
+      ) {
+        core.info(
+          `Issue has one o blacklist labels: ${project.labels.blacklist}`
+        )
+        continue
+      }
       requiredLabels = [...requiredLabels, ...project.labels.required]
     }
     core.info(`Required labels: ${requiredLabels}`)
@@ -120,6 +128,7 @@ interface ProjectLabels {
   match: string
   labels: {
     required: string[]
+    blacklist: string[]
   }
 }
 

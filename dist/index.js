@@ -4146,11 +4146,12 @@ function run() {
             for (const project of projects) {
                 if (!issueProjects.some(issueProject => issueProject.match(project.match)))
                     continue;
-                core.info(`Matches project pattern: ${project.match}`);
+                core.startGroup(`Matches project pattern: ${project.match}`);
                 if (currentLabels.some(label => { var _a; return (_a = project.labels.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
-                    core.info(`Issue has one o blacklist labels: ${project.labels.blacklist}`);
+                    core.info(`Issue has one of blacklist labels: ${project.labels.blacklist}`);
                     continue;
                 }
+                core.endGroup();
                 requiredLabels = [...requiredLabels, ...project.labels.required];
             }
             core.info(`Required labels: ${requiredLabels}`);

@@ -29,15 +29,16 @@ async function run(): Promise<void> {
         !issueProjects.some(issueProject => issueProject.match(project.match))
       )
         continue
-      core.info(`Matches project pattern: ${project.match}`)
+      core.startGroup(`Matches project pattern: ${project.match}`)
       if (
         currentLabels.some(label => project.labels.blacklist?.includes(label))
       ) {
         core.info(
-          `Issue has one o blacklist labels: ${project.labels.blacklist}`
+          `Issue has one of blacklist labels: ${project.labels.blacklist}`
         )
         continue
       }
+      core.endGroup()
       requiredLabels = [...requiredLabels, ...project.labels.required]
     }
     core.info(`Required labels: ${requiredLabels}`)

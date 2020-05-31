@@ -4149,10 +4149,12 @@ function run() {
                 core.startGroup(`Matches project pattern: ${project.match}`);
                 if (currentLabels.some(label => { var _a; return (_a = project.labels.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
                     core.info(`Issue has one of blacklist labels: ${project.labels.blacklist}`);
+                    core.endGroup();
                     continue;
                 }
-                core.endGroup();
+                core.info(`Labels required by project: ${project.labels.required}`);
                 requiredLabels = [...requiredLabels, ...project.labels.required];
+                core.endGroup();
             }
             core.info(`Required labels: ${requiredLabels}`);
             const addingLabels = requiredLabels.filter(label => !currentLabels.includes(label));

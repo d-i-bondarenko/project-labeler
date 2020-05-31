@@ -36,10 +36,12 @@ async function run(): Promise<void> {
         core.info(
           `Issue has one of blacklist labels: ${project.labels.blacklist}`
         )
+        core.endGroup()
         continue
       }
-      core.endGroup()
+      core.info(`Labels required by project: ${project.labels.required}`)
       requiredLabels = [...requiredLabels, ...project.labels.required]
+      core.endGroup()
     }
     core.info(`Required labels: ${requiredLabels}`)
     const addingLabels = requiredLabels.filter(

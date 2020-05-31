@@ -28,7 +28,8 @@ async function run(): Promise<void> {
       if (
         !issueProjects.some(issueProject => issueProject.match(project.match))
       )
-        return
+        continue
+      core.info(`Matches project pattern: ${project.match}`)
       requiredLabels = [...requiredLabels, ...project.labels.required]
     }
     core.info(`Required labels: ${requiredLabels}`)

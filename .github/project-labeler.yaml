@@ -1,0 +1,4 @@
+projects:
+  - match: Test.*
+    labels:
+      required: ["good first issue"]

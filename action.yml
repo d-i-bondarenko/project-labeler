@@ -4,6 +4,9 @@ author: "Dmitry Bondarenko"
 inputs:
   repo-token:
     description: "The GITHUB_TOKEN secret"
+  configuration-path:
+    description: "The path for the label configurations of projects"
+    default: ".github/project-labeler.yml"
 runs:
   using: "node12"
   main: "dist/index.js"

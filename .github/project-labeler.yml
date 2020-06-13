@@ -1,5 +1,5 @@
 projects:
   - match: Test.*
     labels:
-      required: ["good first issue"]
-      blacklist: ["enhancement"]
+      - required: ["good first issue"]
+        blacklist: ["enhancement"]

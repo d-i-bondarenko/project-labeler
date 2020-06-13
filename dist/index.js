@@ -4124,6 +4124,7 @@ const core = __importStar(__webpack_require__(470));
 const github = __importStar(__webpack_require__(469));
 const js_yaml_1 = __webpack_require__(414);
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('repo-token', { required: true });
@@ -4149,6 +4150,11 @@ function run() {
                 core.startGroup(`Matches project pattern: ${project.match}`);
                 for (const [index, labelsRule] of project.labels.entries()) {
                     core.info(`Inspecting rule #${index + 1}`);
+                    if (!((_a = labelsRule.whitelist) === null || _a === void 0 ? void 0 : _a.every(label => currentLabels.includes(label)))) {
+                        core.info(`Issue does not have one of rule's whitelist labels: ${labelsRule.whitelist}`);
+                        core.endGroup();
+                        continue;
+                    }
                     if (currentLabels.some(label => { var _a; return (_a = labelsRule.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
                         core.info(`Issue has one of rule's blacklist labels: ${labelsRule.blacklist}`);
                         core.endGroup();

@@ -33,6 +33,15 @@ async function run(): Promise<void> {
       for (const [index, labelsRule] of project.labels.entries()) {
         core.info(`Inspecting rule #${index + 1}`)
         if (
+          !labelsRule.whitelist?.every(label => currentLabels.includes(label))
+        ) {
+          core.info(
+            `Issue does not have one of rule's whitelist labels: ${labelsRule.whitelist}`
+          )
+          core.endGroup()
+          continue
+        }
+        if (
           currentLabels.some(label => labelsRule.blacklist?.includes(label))
         ) {
           core.info(
@@ -137,7 +146,8 @@ interface ProjectLabels {
 
 interface LabelsRule {
   required: string[]
-  blacklist: string[]
+  blacklist?: string[]
+  whitelist?: string[]
 }
 
 const fetchContent = async (

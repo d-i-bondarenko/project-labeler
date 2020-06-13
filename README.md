@@ -12,16 +12,16 @@ Add `.github/project-labeler.yml` with labels settings for each project.
 
 ```yml
 projects:
-  # RegExp for project name
-  - match: ROADMAP.*
-    labels:
-      # Labels that should be on issues from matching projects
-      required: ["Size: M"]
-      # If issue has any of blacklist-labels it is ignored by action
-      blacklist: ["Bug"]
+  - match: ROADMAP.* # RegExp for project name
+    labels: # List of label's rules
+      - required: ["Size: M"] # Labels that should be on issues from matching projects
+        blacklist: ["Bug"] # If issue has any of blacklist-labels it is ignored by action
+      - required: ["Size: S"]
+        whitelist: ["Bug"] # Only issues with all whitelist labels are going to be processed
+        blacklist: ["Won't fix"] # In this case label "Size: S" will be added only on issues with "Bug" label and without "Won't fix"
   - match: TECHDEBT.*
     labels:
-      required: ["Size: S"]
+      - required: ["Area: Infrastructure"]
 ```
 
 ### Step 2. Create Workflow
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add labels by project
-        uses: d-i-bondarenko/project-labeler@master
+        uses: d-i-bondarenko/project-labeler@v0.2.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
 ```

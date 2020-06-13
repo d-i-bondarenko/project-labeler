@@ -2,4 +2,7 @@ projects:
   - match: Test.*
     labels:
       - required: ["good first issue"]
+        whitelist: ["bug"]
         blacklist: ["enhancement"]
+      - required: ["help wanted"]
+        whitelist: ["enhancement"]

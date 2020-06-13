@@ -30,17 +30,20 @@ async function run(): Promise<void> {
       )
         continue
       core.startGroup(`Matches project pattern: ${project.match}`)
-      if (
-        currentLabels.some(label => project.labels.blacklist?.includes(label))
-      ) {
-        core.info(
-          `Issue has one of blacklist labels: ${project.labels.blacklist}`
-        )
-        core.endGroup()
-        continue
+      for (const [index, labelsRule] of project.labels.entries()) {
+        core.info(`Inspecting rule #${index + 1}`)
+        if (
+          currentLabels.some(label => labelsRule.blacklist?.includes(label))
+        ) {
+          core.info(
+            `Issue has one of rule's blacklist labels: ${labelsRule.blacklist}`
+          )
+          core.endGroup()
+          continue
+        }
+        core.info(`Labels required by rule: ${labelsRule.required}`)
+        requiredLabels = [...requiredLabels, ...labelsRule.required]
       }
-      core.info(`Labels required by project: ${project.labels.required}`)
-      requiredLabels = [...requiredLabels, ...project.labels.required]
       core.endGroup()
     }
     core.info(`Required labels: ${requiredLabels}`)
@@ -129,10 +132,12 @@ interface ProjectsConfiguration {
 
 interface ProjectLabels {
   match: string
-  labels: {
-    required: string[]
-    blacklist: string[]
-  }
+  labels: LabelsRule[]
+}
+
+interface LabelsRule {
+  required: string[]
+  blacklist: string[]
 }
 
 const fetchContent = async (

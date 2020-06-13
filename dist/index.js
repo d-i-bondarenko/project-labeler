@@ -4147,13 +4147,16 @@ function run() {
                 if (!issueProjects.some(issueProject => issueProject.match(project.match)))
                     continue;
                 core.startGroup(`Matches project pattern: ${project.match}`);
-                if (currentLabels.some(label => { var _a; return (_a = project.labels.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
-                    core.info(`Issue has one of blacklist labels: ${project.labels.blacklist}`);
-                    core.endGroup();
-                    continue;
+                for (const [index, labelsRule] of project.labels.entries()) {
+                    core.info(`Inspecting rule #${index + 1}`);
+                    if (currentLabels.some(label => { var _a; return (_a = labelsRule.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
+                        core.info(`Issue has one of rule's blacklist labels: ${labelsRule.blacklist}`);
+                        core.endGroup();
+                        continue;
+                    }
+                    core.info(`Labels required by rule: ${labelsRule.required}`);
+                    requiredLabels = [...requiredLabels, ...labelsRule.required];
                 }
-                core.info(`Labels required by project: ${project.labels.required}`);
-                requiredLabels = [...requiredLabels, ...project.labels.required];
                 core.endGroup();
             }
             core.info(`Required labels: ${requiredLabels}`);

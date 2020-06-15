@@ -4150,14 +4150,12 @@ function run() {
                 core.startGroup(`Matches project pattern: ${project.match}`);
                 for (const [index, labelsRule] of project.labels.entries()) {
                     core.info(`Inspecting rule #${index + 1}`);
-                    if (!((_a = labelsRule.whitelist) === null || _a === void 0 ? void 0 : _a.every(label => currentLabels.includes(label)))) {
+                    if ((_a = labelsRule.whitelist) === null || _a === void 0 ? void 0 : _a.some(label => !currentLabels.includes(label))) {
                         core.info(`Issue does not have one of rule's whitelist labels: ${labelsRule.whitelist}`);
-                        core.endGroup();
                         continue;
                     }
                     if (currentLabels.some(label => { var _a; return (_a = labelsRule.blacklist) === null || _a === void 0 ? void 0 : _a.includes(label); })) {
                         core.info(`Issue has one of rule's blacklist labels: ${labelsRule.blacklist}`);
-                        core.endGroup();
                         continue;
                     }
                     core.info(`Labels required by rule: ${labelsRule.required}`);

@@ -33,12 +33,11 @@ async function run(): Promise<void> {
       for (const [index, labelsRule] of project.labels.entries()) {
         core.info(`Inspecting rule #${index + 1}`)
         if (
-          !labelsRule.whitelist?.every(label => currentLabels.includes(label))
+          labelsRule.whitelist?.some(label => !currentLabels.includes(label))
         ) {
           core.info(
             `Issue does not have one of rule's whitelist labels: ${labelsRule.whitelist}`
           )
-          core.endGroup()
           continue
         }
         if (
@@ -47,7 +46,6 @@ async function run(): Promise<void> {
           core.info(
             `Issue has one of rule's blacklist labels: ${labelsRule.blacklist}`
           )
-          core.endGroup()
           continue
         }
         core.info(`Labels required by rule: ${labelsRule.required}`)

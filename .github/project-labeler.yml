@@ -6,3 +6,6 @@ projects:
         blacklist: ["enhancement"]
       - required: ["help wanted"]
         whitelist: ["enhancement"]
+  - match: Docs
+    labels:
+      - required: ["documentation"]

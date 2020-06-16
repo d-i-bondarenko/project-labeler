@@ -4150,7 +4150,7 @@ function run() {
                 core.startGroup(`Matches project pattern: ${project.match}`);
                 for (const [index, labelsRule] of project.labels.entries()) {
                     core.info(`Inspecting rule #${index + 1}`);
-                    if ((_a = labelsRule.whitelist) === null || _a === void 0 ? void 0 : _a.some(label => !currentLabels.includes(label))) {
+                    if ((_a = labelsRule.whitelist) === null || _a === void 0 ? void 0 : _a.every(label => !currentLabels.includes(label))) {
                         core.info(`Issue does not have one of rule's whitelist labels: ${labelsRule.whitelist}`);
                         continue;
                     }

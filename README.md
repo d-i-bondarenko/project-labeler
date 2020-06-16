@@ -17,7 +17,7 @@ projects:
       - required: ["Size: M"] # Labels that should be on issues from matching projects
         blacklist: ["Bug"] # If issue has any of blacklist-labels it is ignored by action
       - required: ["Size: S"]
-        whitelist: ["Bug"] # Only issues with all whitelist labels are going to be processed
+        whitelist: ["Bug"] # Only issues with any of whitelist labels are going to be processed
         blacklist: ["Won't fix"] # In this case label "Size: S" will be added only on issues with "Bug" label and without "Won't fix"
   - match: TECHDEBT.*
     labels:

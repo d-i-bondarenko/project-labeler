@@ -1,14 +1,13 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {ReposGetContentsResponseData} from '@octokit/types'
 import {safeLoad} from 'js-yaml'
 
 async function run(): Promise<void> {
   try {
     const token = core.getInput('repo-token', {required: true})
     const context = github.context
-    const client = new github.GitHub(token)
-    const issue = await getIssue(client)
+    const octokit = github.getOctokit(token)
+    const issue = await getIssue(octokit)
     core.debug(`Issue: ${JSON.stringify(issue)}`)
     const issueProjects = issue.projectCards.nodes.map(
       node => node.project.name
@@ -22,7 +21,10 @@ async function run(): Promise<void> {
     const configurationPath = core.getInput('configuration-path', {
       required: true
     })
-    const {projects} = await getProjectsConfiguration(client, configurationPath)
+    const {projects} = await getProjectsConfiguration(
+      octokit,
+      configurationPath
+    )
     let requiredLabels: string[] = []
     for (const project of projects) {
       if (
@@ -62,7 +64,7 @@ async function run(): Promise<void> {
       core.info('There is no labels to add')
       return Promise.resolve()
     }
-    await client.issues.addLabels({
+    await octokit.issues.addLabels({
       issue_number: context.issue.number,
       labels: addingLabels,
       owner: context.repo.owner,
@@ -92,14 +94,16 @@ interface IssueResponse {
   }
 }
 
-const getIssue = async (client: github.GitHub): Promise<Issue> => {
+const getIssue = async (
+  octokit: ReturnType<typeof github.getOctokit>
+): Promise<Issue> => {
   const params = {
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     issueNumber: github.context.issue.number
   }
   core.debug(`Issue request params: ${JSON.stringify(params)}`)
-  const response = await client.graphql<IssueResponse>(
+  const response = await octokit.graphql<IssueResponse>(
     `
       query issue($owner: String!, $repo: String!, $issueNumber: Int!) {
         repository(owner: $owner, name: $repo) {
@@ -126,10 +130,10 @@ const getIssue = async (client: github.GitHub): Promise<Issue> => {
 }
 
 const getProjectsConfiguration = async (
-  client: github.GitHub,
+  octokit: ReturnType<typeof github.getOctokit>,
   configurationPath: string
 ): Promise<ProjectsConfiguration> => {
-  const configurationContent = await fetchContent(client, configurationPath)
+  const configurationContent = await fetchContent(octokit, configurationPath)
   return safeLoad(configurationContent) as ProjectsConfiguration
 }
 
@@ -149,7 +153,7 @@ interface LabelsRule {
 }
 
 const fetchContent = async (
-  client: github.GitHub,
+  octokit: ReturnType<typeof github.getOctokit>,
   contentPath: string
 ): Promise<string> => {
   const params = {
@@ -159,8 +163,8 @@ const fetchContent = async (
     path: contentPath
   }
   core.debug(`Content request params: ${JSON.stringify(params)}`)
-  const response = await client.repos.getContents(params)
-  const {content, encoding} = response.data as ReposGetContentsResponseData
+  const response = await octokit.repos.getContent(params)
+  const {content, encoding} = response.data
   return Buffer.from(content, encoding as BufferEncoding).toString()
 }
 

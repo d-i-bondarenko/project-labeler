@@ -3,8 +3,10 @@ description: "Github Action for adding labels to issues based on project"
 author: "Dmitry Bondarenko"
 inputs:
   repo-token:
+    required: true
     description: "The GITHUB_TOKEN secret"
   configuration-path:
+    required: false
     description: "The path for the label configurations of projects"
     default: ".github/project-labeler.yml"
 runs:

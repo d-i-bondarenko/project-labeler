@@ -1,10 +1,10 @@
-import * as core from '@actions/core'
-import * as github from '@actions/github'
-import {safeLoad} from 'js-yaml'
+import * as core from "@actions/core"
+import * as github from "@actions/github"
+import { safeLoad } from "js-yaml"
 
 async function run(): Promise<void> {
   try {
-    const token = core.getInput('repo-token', {required: true})
+    const token = core.getInput("repo-token", { required: true })
     const context = github.context
     const octokit = github.getOctokit(token)
     const issue = await getIssue(octokit)
@@ -13,15 +13,15 @@ async function run(): Promise<void> {
       node => node.project.name
     )
     if (issueProjects.length === 0) {
-      core.info('There is no projects for issue')
+      core.info("There is no projects for issue")
       return Promise.resolve()
     }
     const currentLabels = issue.labels.nodes.map(node => node.name)
     core.info(`Current labels: ${currentLabels}`)
-    const configurationPath = core.getInput('configuration-path', {
+    const configurationPath = core.getInput("configuration-path", {
       required: true
     })
-    const {projects} = await getProjectsConfiguration(
+    const { projects } = await getProjectsConfiguration(
       octokit,
       configurationPath
     )
@@ -61,7 +61,7 @@ async function run(): Promise<void> {
     )
     core.info(`Adding labels: ${addingLabels}`)
     if (addingLabels.length === 0) {
-      core.info('There is no labels to add')
+      core.info("There is no labels to add")
       return Promise.resolve()
     }
     await octokit.issues.addLabels({
@@ -81,10 +81,10 @@ interface Project {
 
 interface Issue {
   projectCards: {
-    nodes: {project: Project}[]
+    nodes: { project: Project }[]
   }
   labels: {
-    nodes: {name: string}[]
+    nodes: { name: string }[]
   }
 }
 
@@ -164,7 +164,7 @@ const fetchContent = async (
   }
   core.debug(`Content request params: ${JSON.stringify(params)}`)
   const response = await octokit.repos.getContent(params)
-  const {content, encoding} = response.data
+  const { content, encoding } = response.data
   return Buffer.from(content, encoding as BufferEncoding).toString()
 }
 

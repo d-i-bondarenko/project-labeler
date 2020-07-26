@@ -1169,19 +1169,19 @@ function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const token = core.getInput('repo-token', { required: true });
+            const token = core.getInput("repo-token", { required: true });
             const context = github.context;
             const octokit = github.getOctokit(token);
             const issue = yield getIssue(octokit);
             core.debug(`Issue: ${JSON.stringify(issue)}`);
             const issueProjects = issue.projectCards.nodes.map(node => node.project.name);
             if (issueProjects.length === 0) {
-                core.info('There is no projects for issue');
+                core.info("There is no projects for issue");
                 return Promise.resolve();
             }
             const currentLabels = issue.labels.nodes.map(node => node.name);
             core.info(`Current labels: ${currentLabels}`);
-            const configurationPath = core.getInput('configuration-path', {
+            const configurationPath = core.getInput("configuration-path", {
                 required: true
             });
             const { projects } = yield getProjectsConfiguration(octokit, configurationPath);
@@ -1209,7 +1209,7 @@ function run() {
             const addingLabels = requiredLabels.filter(label => !currentLabels.includes(label));
             core.info(`Adding labels: ${addingLabels}`);
             if (addingLabels.length === 0) {
-                core.info('There is no labels to add');
+                core.info("There is no labels to add");
                 return Promise.resolve();
             }
             yield octokit.issues.addLabels({
